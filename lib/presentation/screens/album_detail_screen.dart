@@ -162,7 +162,7 @@ class AlbumDetailScreen extends StatelessWidget {
                       );
                     },
                   ),
-                  if (context.read<AlbumBloc>().isOffline)
+                  if (context.read<AlbumBloc>().loadedFromCache)
                     Positioned(
                       top: 10,
                       left: 10,
@@ -215,7 +215,9 @@ class AlbumDetailScreen extends StatelessWidget {
                         backgroundColor: Theme.of(context).colorScheme.primary,
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 18),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(35),
+                        ),
                         elevation: 6,
                       ),
                     ),

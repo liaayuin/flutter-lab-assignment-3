@@ -81,7 +81,7 @@ class AlbumListScreen extends StatelessWidget {
                       );
                     },
                   ),
-                  if (context.read<AlbumBloc>().isOffline)
+                  if (context.read<AlbumBloc>().loadedFromCache)
                     Positioned(
                       top: 10,
                       left: 10,
