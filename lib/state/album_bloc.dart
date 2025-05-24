@@ -6,6 +6,7 @@ import 'album_state.dart';
 
 class AlbumBloc extends Bloc<AlbumEvent, AlbumState> {
   final AlbumRepository albumRepository;
+  bool isOffline = false;
 
   AlbumBloc(this.albumRepository) : super(AlbumInitial()) {
     on<FetchAlbums>(_onFetchAlbums);
@@ -16,9 +17,16 @@ class AlbumBloc extends Bloc<AlbumEvent, AlbumState> {
     emit(AlbumLoading());
     try {
       final albums = await albumRepository.getAlbums();
+      isOffline = false;
       emit(AlbumsLoaded(albums));
     } catch (e) {
-      emit(AlbumError('Failed to fetch albums: $e'));
+      isOffline = true;
+      final albums = await albumRepository.getAlbums();
+      if (albums.isNotEmpty) {
+        emit(AlbumsLoaded(albums));
+      } else {
+        emit(AlbumError('Failed to fetch albums: $e'));
+      }
     }
   }
 
@@ -26,9 +34,16 @@ class AlbumBloc extends Bloc<AlbumEvent, AlbumState> {
     emit(AlbumLoading());
     try {
       final photos = await albumRepository.getPhotosByAlbum(event.albumId);
+      isOffline = false;
       emit(AlbumDetailsLoaded(photos));
     } catch (e) {
-      emit(AlbumError('Failed to fetch photos: $e'));
+      isOffline = true;
+      final photos = await albumRepository.getPhotosByAlbum(event.albumId);
+      if (photos.isNotEmpty) {
+        emit(AlbumDetailsLoaded(photos));
+      } else {
+        emit(AlbumError('Failed to fetch photos: $e'));
+      }
     }
   }
 }

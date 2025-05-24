@@ -72,93 +72,116 @@ class AlbumDetailScreen extends StatelessWidget {
                 ),
               );
             } else if (state is AlbumDetailsLoaded) {
-              return GridView.builder(
-                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  childAspectRatio: 0.9,
-                ),
-                itemCount: state.photos.length,
-                itemBuilder: (context, index) {
-                  final photo = state.photos[index];
-                  return Card(
-                    elevation: 6,
-                    margin: const EdgeInsets.all(8),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(15),
-                      child: Stack(
-                        children: [
-                          photo.thumbnailUrl != null && photo.thumbnailUrl!.isNotEmpty
-                              ? Image.network(
-                            photo.thumbnailUrl!,
-                            width: double.infinity,
-                            height: 120,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) => Container(
-                              width: double.infinity,
-                              height: 120,
-                              decoration: BoxDecoration(
-                                color: Colors.grey.withOpacity(0.3),
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 16.0),
-                                child: FittedBox(
-                                  fit: BoxFit.contain,
-                                  child: Icon(
-                                    Icons.image_not_supported,
-                                    color: Colors.grey.withOpacity(0.7),
+              return Stack(
+                children: [
+                  GridView.builder(
+                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      childAspectRatio: 0.9,
+                    ),
+                    itemCount: state.photos.length,
+                    itemBuilder: (context, index) {
+                      final photo = state.photos[index];
+                      return Card(
+                        elevation: 6,
+                        margin: const EdgeInsets.all(8),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(15),
+                          child: Stack(
+                            children: [
+                              photo.thumbnailUrl != null && photo.thumbnailUrl!.isNotEmpty
+                                  ? Image.network(
+                                photo.thumbnailUrl!,
+                                width: double.infinity,
+                                height: 120,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) => Container(
+                                  width: double.infinity,
+                                  height: 120,
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey.withOpacity(0.3),
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(top: 16.0),
+                                    child: FittedBox(
+                                      fit: BoxFit.contain,
+                                      child: Icon(
+                                        Icons.image_not_supported,
+                                        color: Colors.grey.withOpacity(0.7),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              )
+                                  : Container(
+                                width: double.infinity,
+                                height: 120,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.withOpacity(0.3),
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 16.0),
+                                  child: FittedBox(
+                                    fit: BoxFit.contain,
+                                    child: Icon(
+                                      Icons.image_not_supported,
+                                      color: Colors.grey.withOpacity(0.7),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          )
-                              : Container(
-                            width: double.infinity,
-                            height: 120,
-                            decoration: BoxDecoration(
-                              color: Colors.grey.withOpacity(0.3),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 16.0),
-                              child: FittedBox(
-                                fit: BoxFit.contain,
-                                child: Icon(
-                                  Icons.image_not_supported,
-                                  color: Colors.grey.withOpacity(0.7),
+                              Positioned(
+                                bottom: 0,
+                                left: 0,
+                                right: 0,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                                  color: Colors.black.withOpacity(0.6),
+                                  child: Text(
+                                    photo.title,
+                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      letterSpacing: 0.5,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.center,
+                                  ),
                                 ),
                               ),
-                            ),
+                            ],
                           ),
-                          Positioned(
-                            bottom: 0,
-                            left: 0,
-                            right: 0,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-                              color: Colors.black.withOpacity(0.6),
-                              child: Text(
-                                photo.title,
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                  letterSpacing: 0.5,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
+                        ),
+                      );
+                    },
+                  ),
+                  if (context.read<AlbumBloc>().isOffline)
+                    Positioned(
+                      top: 10,
+                      left: 10,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.withOpacity(0.8),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Text(
+                          'Using cache',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
                           ),
-                        ],
+                        ),
                       ),
                     ),
-                  );
-                },
+                ],
               );
             } else if (state is AlbumError) {
               return Center(

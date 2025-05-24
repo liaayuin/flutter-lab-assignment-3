@@ -64,20 +64,43 @@ class AlbumListScreen extends StatelessWidget {
                 ),
               );
             } else if (state is AlbumsLoaded) {
-              return ListView.builder(
-                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-                itemCount: state.albums.length,
-                itemBuilder: (context, index) {
-                  final album = state.albums[index];
-                  return AlbumItem(
-                    album: album,
-                    onTap: () {
-                      context.goNamed('album_detail',
-                          pathParameters: {'id': album.id.toString()},
-                          extra: album.title);
+              return Stack(
+                children: [
+                  ListView.builder(
+                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                    itemCount: state.albums.length,
+                    itemBuilder: (context, index) {
+                      final album = state.albums[index];
+                      return AlbumItem(
+                        album: album,
+                        onTap: () {
+                          context.goNamed('album_detail',
+                              pathParameters: {'id': album.id.toString()},
+                              extra: album.title);
+                        },
+                      );
                     },
-                  );
-                },
+                  ),
+                  if (context.read<AlbumBloc>().isOffline)
+                    Positioned(
+                      top: 10,
+                      left: 10,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.withOpacity(0.8),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Text(
+                          'Using cache',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               );
             } else if (state is AlbumError) {
               return Center(
